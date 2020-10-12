@@ -1,0 +1,12 @@
+{
+  "name": "CPS_MobileApp",
+  "displayName": "CPS_MobileApp",
+  "expo": {
+    "name": "CPS_MobileApp",
+    "slug": "CPS_MobileApp",
+    "version": "1.0.0",
+    "assetBundlePatterns": [
+      "**/*"
+    ]
+  }
+}
