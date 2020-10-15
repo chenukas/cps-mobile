@@ -83,6 +83,7 @@ const Login = ({navigation}) => {
                         placeholder="Enter your Password"
                         mode="flat"
                         theme={theme}
+                        secureTextEntry={true}
                         onChangeText={text => setPassword(text)}
                     />                  
 

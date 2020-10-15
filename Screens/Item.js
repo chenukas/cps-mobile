@@ -7,7 +7,7 @@ export default class Item extends React.Component {
         return (
             <View key={this.props.keyval} style={styles.note}>
 
-                <Text style={styles.noteText}>{this.props.val.productId}</Text>
+                <Text style={styles.noteText}>{this.props.val.productName}</Text>
                 <Text style={styles.noteText}>{this.props.val.quantity}</Text>
 
                 <TouchableOpacity onPress={this.props.deleteMethod} style={styles.noteDelete}>
