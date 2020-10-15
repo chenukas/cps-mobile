@@ -32,7 +32,7 @@ const Main = (props) => {
                 <Text style={styles.text}>{fullName}</Text>
             </View>
 
-            <Button icon="login" style={styles.button1} mode="contained" onPress={() => console.log("press")}>
+            <Button icon="login" style={styles.button1} mode="contained" onPress={() => {props.navigation.navigate("ViewStocks")}}>
                 View Products
             </Button>
 
@@ -40,7 +40,7 @@ const Main = (props) => {
                 Create Requisition
             </Button>
 
-            <Button icon="login" style={styles.button} mode="contained" onPress={() => console.log("press")}>
+            <Button icon="login" style={styles.button} mode="contained" onPress={() => {props.navigation.navigate("ViewRequisition")}}>
                 Place Order
             </Button>
         </View>

@@ -5,6 +5,9 @@ import {Picker} from '@react-native-community/picker';
 
 import Item from './Item'
 
+import DatePicker from 'react-native-datepicker';
+//import DateTimePicker from '@react-native-community/datetimepicker';
+
 const wait = (timeout) => {
     return new Promise(resolve => {
       setTimeout(resolve, timeout);
@@ -14,7 +17,15 @@ const wait = (timeout) => {
 const CreateRequisition = (props) => {
 
     const {_id, fullName, site} = props.route.params.userArray;
-    //console.log(site.siteNo)
+
+    useEffect(() => {
+        var date = new Date().getDate(); //Current Date
+        var month = new Date().getMonth() + 1; //Current Month
+        var year = new Date().getFullYear(); //Current Year
+        setRequestDate(
+          date + '/' + month + '/' + year
+        );
+      }, []);
 
     const [requisitionID, setRequisitionID] = useState("")
     const [siteNo, setSiteNo] = useState(site.siteNo)
@@ -28,7 +39,7 @@ const CreateRequisition = (props) => {
     const [qty, setQty] = useState("")
     const [items, setItems] = useState([])
     const [totalAmount, setTotalAmount] = useState("")
-    const [status, setStatus] = useState("pending")
+    const [status, setStatus] = useState("")
     const [suppliers, setSuppliers] = useState([])
     const [product, setProduct] = useState([])
 
@@ -80,10 +91,18 @@ const CreateRequisition = (props) => {
         if(prodName){
 
             console.log(prodName)
-            items.push({
-                'productId':prodName,
-                'quantity':qty
-            })
+            //console.log(product)
+            for(let i = 0; i < product.length; i++){
+                if(prodName == product[i].items){
+                    items.push({
+                        'productId':product[i].productId,
+                        'productName':prodName,
+                        'unitPrice':product[i].unitPrice,
+                        'quantity':qty
+                    })
+                }
+            }
+            
             setItems(items)
             setQty("")
         }
@@ -106,14 +125,16 @@ const CreateRequisition = (props) => {
                     })
                 }).then(res => res.json())
                 .then(data =>{
-                    console.log(data.data.items.length)
                     for(let i = 0; i < data.data.items.length; i++){
                         res1.push({
                             'items':data.data.items[i].itemName,
+                            'unitPrice':data.data.items[i].unitPrice,
+                            'productId':data.data.items[i]._id,
                             'id':i     
                         })
                     }
                     setProduct(res1)
+                    console.log(res1)
 
                 }).catch(err =>{
                     console.log("error", err)
@@ -136,10 +157,16 @@ const CreateRequisition = (props) => {
         console.log(items)
         for(i = 0; i < items.length; i++){
             console.log(items[i].quantity)
-            quan = items[i].quantity * 1;
+            quan = items[i].quantity * items[i].unitPrice;
             tot = tot + quan;
         }
         setTotalAmount(tot.toString())
+        if(tot > 100000){
+            setStatus("pending")
+        }
+        else{
+            setStatus("approved")
+        }
     }
 
     const _Submit = () => {
@@ -161,7 +188,14 @@ const CreateRequisition = (props) => {
             })
         }).then(res => res.json())
         .then(data =>{
-            Alert.alert(`Successfully Added`)
+            console.log(data.message)
+            if(data.success == false){
+                Alert.alert("Requisition validation failed")
+            }
+            else{
+                Alert.alert(`Successfully Added`)
+            }
+            
         }).catch(err =>{
             console.log("error", err)
         })
@@ -207,13 +241,34 @@ const CreateRequisition = (props) => {
                             theme={theme}
                             onChangeText={text => setSiteManagerName(text)}
                         />
-                        <TextInput
-                            label="Require Date"
-                            value={requireDate}
-                            style={{marginLeft:10, width:"40%"}}
-                            mode="outlined"
-                            theme={theme}
-                            onChangeText={text => setRequireDate(text)}
+
+                        <DatePicker
+                            style={styles.datePickerStyle}
+                            date={requireDate}
+                            mode="date"
+                            placeholder="select require date"
+                            format="DD/MM/YYYY"
+                            confirmBtnText="Confirm"
+                            cancelBtnText="Cancel"
+                            customStyles={{
+                                dateIcon: {
+                                //display: 'none',
+                                position: 'relative',
+                                right: 2,
+                                top: 4,
+                                marginLeft: 0,
+                                },
+                                label:"Require date",
+                                dateInput: {
+                                marginTop:10,
+                                marginLeft: 10,
+                                borderRadius: 5,
+                                height:55
+                                },
+                            }}
+                            onDateChange={(date) => {
+                                setRequireDate(date);
+                            }}
                         />
                     </View>
 
@@ -227,6 +282,7 @@ const CreateRequisition = (props) => {
                             onChangeText={text => setSiteNo(text)}
                     />
 
+                        <Text style={{marginTop: 10, color:"#000", marginLeft:15}}>Select Supplier : </Text>
                         <View style={{borderWidth:2, width: 380, marginLeft: 10, marginTop: 10, borderRadius: 5, borderColor:"#948E8E"}}>
                             <Picker
                                 selectedValue={supplierName}
@@ -243,7 +299,7 @@ const CreateRequisition = (props) => {
                         </View>
 
                         <Button icon="login" style={styles.button} mode="contained" onPress={() => generate()}>
-                                Success
+                                Submit
                             </Button>
 
                     {
@@ -270,6 +326,7 @@ const CreateRequisition = (props) => {
                                     label="Quantity"
                                     value={qty}
                                     style={{marginLeft:10, width:"40%"}}
+                                    keyboardType="number-pad"
                                     mode="outlined"
                                     theme={theme}
                                     onChangeText={text => setQty(text)}
@@ -289,7 +346,7 @@ const CreateRequisition = (props) => {
                             </ScrollView>
 
                             <Button icon="login" style={styles.button} mode="contained" onPress={() => calculate()}>
-                                CALCULATE
+                                Calculate
                             </Button>
 
                             <TextInput
@@ -303,7 +360,7 @@ const CreateRequisition = (props) => {
                             />
 
                             <Button icon="login" style={styles.button} mode="contained" onPress={() => _Submit()}>
-                                Save
+                                Create Requisition
                             </Button>
 
                         </View>
@@ -330,10 +387,12 @@ const styles = StyleSheet.create({
     },
     text1:{
         marginTop: 10,
-        fontSize: 22,
+        fontSize: 30,
         color: "#fff",
         fontWeight:"bold",
-        textAlign:"center"
+        textAlign:"center",
+        fontFamily: "courier"
+
     },
     text:{
         fontSize: 22,
@@ -347,7 +406,7 @@ const styles = StyleSheet.create({
     },
     darkOverlay1:{
         backgroundColor: "#fff",
-        height:"95%",
+        height:"98%",
         borderTopLeftRadius:40,
         borderTopRightRadius:40
     },
@@ -365,7 +424,8 @@ const styles = StyleSheet.create({
         marginTop: 20,
         width: 400,
         borderRadius:50,
-        backgroundColor:"#B60B2D"
+        backgroundColor:"#B60B2D",
+        marginBottom: 20
     },
     fab: {
         position:'relative',
@@ -374,6 +434,10 @@ const styles = StyleSheet.create({
         height: 55,
         borderRadius:50,
         marginLeft: "80%"
-      }
+    },
+    datePickerStyle: {
+        width: "45%",
+        marginTop: 10,
+    }
 
 })
