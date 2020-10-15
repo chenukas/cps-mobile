@@ -6,6 +6,7 @@ import {Picker} from '@react-native-community/picker';
 import Item from './Item'
 
 import DatePicker from 'react-native-datepicker';
+//import DateTimePicker from '@react-native-community/datetimepicker';
 
 const wait = (timeout) => {
     return new Promise(resolve => {
@@ -298,7 +299,7 @@ const CreateRequisition = (props) => {
                         </View>
 
                         <Button icon="login" style={styles.button} mode="contained" onPress={() => generate()}>
-                                Success
+                                Submit
                             </Button>
 
                     {
@@ -345,7 +346,7 @@ const CreateRequisition = (props) => {
                             </ScrollView>
 
                             <Button icon="login" style={styles.button} mode="contained" onPress={() => calculate()}>
-                                CALCULATE
+                                Calculate
                             </Button>
 
                             <TextInput
@@ -386,10 +387,12 @@ const styles = StyleSheet.create({
     },
     text1:{
         marginTop: 10,
-        fontSize: 22,
+        fontSize: 30,
         color: "#fff",
         fontWeight:"bold",
-        textAlign:"center"
+        textAlign:"center",
+        fontFamily: "courier"
+
     },
     text:{
         fontSize: 22,
