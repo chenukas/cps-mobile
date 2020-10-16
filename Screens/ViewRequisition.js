@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, Image, StyleSheet,ActivityIndicator, FlatList, ScrollView } from 'react-native';
+import { View, Text, Image, StyleSheet,ActivityIndicator, FlatList, ScrollView, Alert } from 'react-native';
 import {Card, FAB, Button} from 'react-native-paper';
 
 const ViewRequisition = () => {
@@ -7,15 +7,32 @@ const ViewRequisition = () => {
     const [data, setData ]  = useState([])
     const [loading, setLoading] = useState(true)
 
+    const [orderID, setOrderID] = useState("")
+    const [status, setStatus] = useState("pending")
+
+    const onRefresh = React.useCallback(() => {
+        setRefreshing(true);
+
+        wait(100).then(() => setRefreshing(false));
+    }, []);
+
     useEffect (() => {
-        fetch("http://10.0.2.2:3000/requisitions")
+        fetch("http://10.0.2.2:3000/getOrderNumber")
+        .then(res => res.json())
+        .then(results => {
+            setOrderID(results.data)
+        })
+    },[])
+
+    useEffect (() => {
+        fetch("http://10.0.2.2:3000/viewPlaceRequisition")
         .then(res => res.json())
         .then(results => {
             console.log(results.data)
             setData(results.data)
             setLoading(false)
         })
-    },[])
+    },[]);
 
     const renderList = ((item) => {
         return(
@@ -31,7 +48,7 @@ const ViewRequisition = () => {
                                     style={{position:"absolute", marginBottom: 6, paddingBottom:20, marginLeft:170, width:200, height: 30, marginTop:20, alignSelf:"center" }} 
                                     mode="contained" 
                                     disabled={item.status === 'approved'?'':'true'} 
-                                    onPress={() => console.log("press")}>
+                                    onPress={() => _placeOrder(item._id)}>
                                         Place Order
                                     </Button>
                                 </View>
@@ -40,30 +57,62 @@ const ViewRequisition = () => {
                         </View>   
             </Card>           
         );
-    })
+    });
+
+    const _placeOrder = (requisitionID) => {
+        //setRequisitionID(rid)
+
+        fetch("http://10.0.2.2:3000/orders", {
+            method: 'POST',
+            headers:{
+                'Content-type' : 'application/json'
+            },
+            body:JSON.stringify({
+                orderID:orderID,
+                requisitionID: requisitionID,
+                status: status
+            })
+        }).then(res => res.json())
+        .then(data =>{
+            console.log(data.message)
+            if(data.success == false){
+                //console.log(data)
+                Alert.alert("Order validation failed")
+            }
+            else{
+                Alert.alert(`Successfully Placed Order`)
+            }
+            
+        }).catch(err =>{
+            console.log("error", err)
+        })
+
+
+    }
 
     return(
-        <View style={styles.darkOverlay}>
-            <Text style={styles.text1}>Requisitions</Text>
-            <View style={styles.darkOverlay1}>
-                <View style={{marginTop: 25}}>
-                        {
-                            loading?
-                            <ActivityIndicator size="large" color="#00ff00" />
-                            :
-                            <FlatList 
-                                data = {data}
-                                renderItem = {({item}) => {
-                                    return renderList(item)
-                                }}
-                                keyExtractor={item => item._id}
-                            />
-                        }
-                </View>
+            <View style={styles.darkOverlay}>
+                <Text style={styles.text1}>Requisitions</Text>
+                <View style={styles.darkOverlay1}>
+                    <View style={{marginTop: 25, marginBottom:30}}>
+                            {
+                                loading?
+                                <ActivityIndicator size="large" color="#00ff00" />
+                                :
+                                <FlatList 
+                                    data = {data}
+                                    renderItem = {({item}) => {
+                                        return renderList(item)
+                                    }}
+                                    keyExtractor={item => item._id}
+                                />
+                            }
+                    </View>
 
+                </View>
+                        
             </View>
-                    
-        </View>
+        
     )
 }
 export default ViewRequisition;
@@ -92,12 +141,6 @@ const styles = StyleSheet.create({
         marginLeft: 10,
         padding: 5,
         color: '#000',
-    },
-    fab: {
-        position: 'absolute',
-        margin: 16,
-        right: 0,
-        bottom: 0,
     },
     text1:{
         fontSize:30,
