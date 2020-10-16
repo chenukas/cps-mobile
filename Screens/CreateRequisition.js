@@ -42,6 +42,7 @@ const CreateRequisition = (props) => {
     const [status, setStatus] = useState("")
     const [suppliers, setSuppliers] = useState([])
     const [product, setProduct] = useState([])
+    const [place, setPlace] = useState(false)
 
     const [refreshing, setRefreshing] = React.useState(false);
     const [loading, setLoading] = useState(true)
@@ -49,6 +50,10 @@ const CreateRequisition = (props) => {
     const res = [];
     const res1 = [];
 
+    const [text1, setText1] = useState('')
+    const [text2, setText2] = useState('')
+    const [text3, setText3] = useState('true')
+    const [text4, setText4] = useState('true')
 
     useEffect (() => {
         fetch("http://10.0.2.2:3000/getRequisitionNumber")
@@ -88,10 +93,9 @@ const CreateRequisition = (props) => {
     const addProducts = () => {
         console.log("Hii")
         
-        if(prodName){
+        if(qty){
 
             console.log(prodName)
-            //console.log(product)
             for(let i = 0; i < product.length; i++){
                 if(prodName == product[i].items){
                     items.push({
@@ -105,9 +109,12 @@ const CreateRequisition = (props) => {
             
             setItems(items)
             setQty("")
+            setText1('true')
+            setText3('')
         }
 
         console.log(items);
+        
     }
 
     const generate = () => {
@@ -167,6 +174,9 @@ const CreateRequisition = (props) => {
         else{
             setStatus("approved")
         }
+        setText2('true')
+        setText4('')
+        setText1('')
     }
 
     const _Submit = () => {
@@ -184,7 +194,8 @@ const CreateRequisition = (props) => {
                 supplierName: supplierName,
                 items: items,
                 totalAmount: totalAmount,
-                status: status
+                status: status,
+                place: place
             })
         }).then(res => res.json())
         .then(data =>{
@@ -252,7 +263,6 @@ const CreateRequisition = (props) => {
                             cancelBtnText="Cancel"
                             customStyles={{
                                 dateIcon: {
-                                //display: 'none',
                                 position: 'relative',
                                 right: 2,
                                 top: 4,
@@ -298,7 +308,9 @@ const CreateRequisition = (props) => {
                             </Picker>
                         </View>
 
-                        <Button icon="login" style={styles.button} mode="contained" onPress={() => generate()}>
+                        <Button icon="login" style={styles.button} mode="contained"
+                        disabled={text3 === 'true'?'':'true'}
+                        onPress={() => generate()}>
                                 Submit
                             </Button>
 
@@ -337,6 +349,7 @@ const CreateRequisition = (props) => {
                                 style={styles.fab}
                                 small={false}
                                 icon="plus"
+                                disabled={text4 === 'true'?'':'true'}
                                 theme = {{colors:{accent:'blue'}}}
                                 onPress={() => addProducts()}
                             />
@@ -345,7 +358,10 @@ const CreateRequisition = (props) => {
                                 {products}
                             </ScrollView>
 
-                            <Button icon="login" style={styles.button} mode="contained" onPress={() => calculate()}>
+                            <Button icon="calculator" style={styles.button} 
+                            mode="contained"
+                            disabled={text1 === 'true'?'':'true'}
+                            onPress={() => calculate()}>
                                 Calculate
                             </Button>
 
@@ -359,7 +375,9 @@ const CreateRequisition = (props) => {
                             onChangeText={text => setTotalAmount(text)}
                             />
 
-                            <Button icon="login" style={styles.button} mode="contained" onPress={() => _Submit()}>
+                            <Button icon="login" style={styles.button}
+                            disabled={text2 === 'true'?'':'true'}
+                             mode="contained" onPress={() => _Submit()}>
                                 Create Requisition
                             </Button>
 

@@ -28,8 +28,8 @@ const ViewStocks = () => {
                                         <Text style={styles.text2}>{item.quantity}</Text>
                                     </View>
                                     
-                                    <Button icon={item.quantity < 100 ?"arrow-down-bold":"check-bold"} 
-                                    color={item.quantity < 100 ?"#C90808":"#065803"} 
+                                    <Button icon={item.quantity < 1000 ?"arrow-down-bold":"check-bold"} 
+                                    color={item.quantity < 1000 ?"#C90808":"#065803"} 
                                     style={{position:"absolute", marginBottom: 6, paddingLeft:15, marginLeft:300, width:0, height: 30, marginTop:20 }} 
                                     mode="contained"
                                     /> 
@@ -45,7 +45,7 @@ const ViewStocks = () => {
         <View style={styles.darkOverlay}>
             <Text style={styles.text1}>Company Stocks</Text>
             <View style={styles.darkOverlay1}>
-                <View style={{marginTop: 25}}>
+                <View style={{marginTop: 25, marginBottom: 30}}>
                         {
                             loading?
                             <ActivityIndicator size="large" color="#00ff00" />
@@ -91,12 +91,6 @@ const styles = StyleSheet.create({
         marginLeft: 10,
         padding: 5,
         color: '#000',
-    },
-    fab: {
-        position: 'absolute',
-        margin: 16,
-        right: 0,
-        bottom: 0,
     },
     text1:{
         fontSize:30,

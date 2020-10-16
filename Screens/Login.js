@@ -59,11 +59,11 @@ const Login = ({navigation}) => {
     }
 
     return(
-        <ScrollView>
             <View style={styles.container}>
                 <View style={styles.darkOverlay}>
                     <View>
-                        <Text style={{margin: 40, fontSize: 30, textAlign:"center", color:"#000", fontWeight: "bold"}}>Welcome To Procurement Controller</Text>
+                        <Text style={{marginTop:60, fontSize: 30, marginLeft:10,color:"#000", fontWeight: "bold"}}>Welcome To</Text>
+                        <Text style={{marginBottom:20, fontSize: 30, textAlign:"center", color:"#000", fontWeight: "bold"}}>Procurement Controller</Text>
                     </View>
                     <TextInput
                         label="Email"
@@ -94,7 +94,6 @@ const Login = ({navigation}) => {
                 
 
             </View>
-        </ScrollView>
         
     );
 }
@@ -109,7 +108,8 @@ export default Login;
 
 const styles = StyleSheet.create({
     container: {
-        flex: 1
+        flex: 1,
+        backgroundColor:"#852d59"
     },
     input:{
         margin: 6,
@@ -124,9 +124,13 @@ const styles = StyleSheet.create({
         backgroundColor:"#B60B2D"
     },
     darkOverlay: {
-        backgroundColor: "#852d59",
-        borderBottomEndRadius: 65,
-        height: 500
+        marginTop:"20%",
+        backgroundColor: "#fff",
+        height:"80%",
+        borderTopLeftRadius:60,
+        borderTopRightRadius:200,
+        borderBottomLeftRadius:200,
+        borderBottomRightRadius:60
     }
 
 })
