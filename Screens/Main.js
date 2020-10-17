@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, Alert, StyleSheet, ScrollView } from 'react-native';
+import { View, Text, Alert, StyleSheet, Image } from 'react-native';
 import { TextInput, Button } from 'react-native-paper';
 
 const Main = (props) => {
@@ -28,20 +28,37 @@ const Main = (props) => {
     return(
         <View style={styles.container}>
             <View style={styles.darkOverlay}>
-                <Text style={styles.text1}>Welcome</Text>
-                <Text style={styles.text}>{fullName}</Text>
+                <View style={{flexDirection:"row"}}>
+                    <Image
+                    source={require(".././assets/logo.png")}
+                    style={styles.profile}
+                    />
+                    <View>
+                        <Text style={styles.text1}>Welcome</Text>
+                        <Text style={styles.text}>{fullName}</Text>
+                    </View>
+                </View>
+                
             </View>
 
-            <Button icon="login" style={styles.button1} mode="contained" onPress={() => {props.navigation.navigate("ViewStocks")}}>
+            <Button icon="eye" style={styles.button1} mode="contained" onPress={() => {props.navigation.navigate("ViewStocks")}}>
                 View Products
             </Button>
 
-            <Button icon="login" style={styles.button} mode="contained" onPress={() => {props.navigation.navigate("CreateRequisition", {userArray})}}>
+            <Button icon="lead-pencil" style={styles.button} mode="contained" onPress={() => {props.navigation.navigate("CreateRequisition", {userArray})}}>
                 Create Requisition
             </Button>
 
-            <Button icon="login" style={styles.button} mode="contained" onPress={() => {props.navigation.navigate("ViewRequisition")}}>
+            <Button icon="lead-pencil" style={styles.button} mode="contained" onPress={() => {props.navigation.navigate("ViewRequisition", {userArray})}}>
                 Place Order
+            </Button>
+
+            <Button icon="eye" style={styles.button} mode="contained" onPress={() => {props.navigation.navigate("ViewOrder", {userArray})}}>
+                View Orders
+            </Button>
+
+            <Button icon="logout" style={styles.button2} mode="contained" onPress={() => {props.navigation.navigate("Login")}}>
+                Logout
             </Button>
         </View>
     )
@@ -56,14 +73,16 @@ const styles = StyleSheet.create({
     text1:{
         marginTop: 10,
         fontSize: 30,
-        color: "#000",
-        marginLeft: 70
+        color: "#fff",
+        marginLeft: 70,
+        alignSelf:"center"
     },
     text:{
         fontSize: 22,
-        color: "#000",
-        marginLeft: 100,
-        fontWeight: "bold"
+        color: "#fff",
+        marginLeft: 50,
+        fontWeight: "bold",
+        alignSelf:"center"
     },
     input:{
         margin: 6,
@@ -74,13 +93,26 @@ const styles = StyleSheet.create({
         borderBottomEndRadius: 65,
         height: 100
     },
+    profile: {
+        width: 100,
+        height: 100,
+        alignSelf:"center"
+    },
     button1: {
         padding: 10,
         margin: 6,
-        marginTop:100,
+        marginTop:20,
         width: 400,
         borderRadius:50,
-        backgroundColor:"#B60B2D"
+        backgroundColor:"#B98307"
+    },
+    button2: {
+        padding: 10,
+        margin: 6,
+        marginTop:130,
+        width: 400,
+        borderRadius:50,
+        backgroundColor:"#B90707"
     },
     button: {
         padding: 10,
@@ -88,7 +120,7 @@ const styles = StyleSheet.create({
         marginTop: 20,
         width: 400,
         borderRadius:50,
-        backgroundColor:"#B60B2D"
+        backgroundColor:"#B98307"
     }
 
 })

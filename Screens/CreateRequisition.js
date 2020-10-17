@@ -17,6 +17,7 @@ const wait = (timeout) => {
 const CreateRequisition = (props) => {
 
     const {_id, fullName, site} = props.route.params.userArray;
+    console.log(props.route.params.userArray)
 
     useEffect(() => {
         var date = new Date().getDate(); //Current Date
@@ -35,6 +36,7 @@ const CreateRequisition = (props) => {
     const [requireDate, setRequireDate] = useState("")
     const [requestDate, setRequestDate] = useState("")
     const [supplierName, setSupplierName] = useState("")
+    const [supplierID, setSupplierID] = useState("")
     const [prodName, setProdName] = useState("")
     const [qty, setQty] = useState("")
     const [items, setItems] = useState([])
@@ -49,6 +51,8 @@ const CreateRequisition = (props) => {
 
     const res = [];
     const res1 = [];
+    
+    console.log(siteId)
 
     const [text1, setText1] = useState('')
     const [text2, setText2] = useState('')
@@ -70,8 +74,9 @@ const CreateRequisition = (props) => {
 
             for(let i = 0; i < results.data.length; i++){
                 res.push({
+                    'supplerId':results.data[i]._id,
                     'supplier':results.data[i].supName,
-                    'id':i     
+                    'id':i
                 })
             }
             setSuppliers(res)
@@ -91,11 +96,9 @@ const CreateRequisition = (props) => {
     })
 
     const addProducts = () => {
-        console.log("Hii")
         
         if(qty){
 
-            console.log(prodName)
             for(let i = 0; i < product.length; i++){
                 if(prodName == product[i].items){
                     items.push({
@@ -112,16 +115,13 @@ const CreateRequisition = (props) => {
             setText1('true')
             setText3('')
         }
-
-        console.log(items);
         
     }
 
     const generate = () => {
         setLoading(false)
-        if(supplierName){
-            const supName = supplierName
-            console.log(supName)
+        if(supplierID){
+            const supName = supplierID
             fetch("http://10.0.2.2:3000/supplierItem", {
                     method: 'POST',
                     headers:{
@@ -132,6 +132,8 @@ const CreateRequisition = (props) => {
                     })
                 }).then(res => res.json())
                 .then(data =>{
+                    console.log(data.data._id)
+                    setSupplierName(data.data._id)
                     for(let i = 0; i < data.data.items.length; i++){
                         res1.push({
                             'items':data.data.items[i].itemName,
@@ -169,10 +171,10 @@ const CreateRequisition = (props) => {
         }
         setTotalAmount(tot.toString())
         if(tot > 100000){
-            setStatus("pending")
+            setStatus("Pending")
         }
         else{
-            setStatus("approved")
+            setStatus("Approved")
         }
         setText2('true')
         setText4('')
@@ -180,6 +182,8 @@ const CreateRequisition = (props) => {
     }
 
     const _Submit = () => {
+        console.log(supplierName)
+        console.log(_id)
         fetch("http://10.0.2.2:3000/requisitions", {
             method: 'POST',
             headers:{
@@ -199,12 +203,12 @@ const CreateRequisition = (props) => {
             })
         }).then(res => res.json())
         .then(data =>{
-            console.log(data.message)
             if(data.success == false){
                 Alert.alert("Requisition validation failed")
             }
             else{
                 Alert.alert(`Successfully Added`)
+                props.navigation.navigate("Main")
             }
             
         }).catch(err =>{
@@ -295,9 +299,9 @@ const CreateRequisition = (props) => {
                         <Text style={{marginTop: 10, color:"#000", marginLeft:15}}>Select Supplier : </Text>
                         <View style={{borderWidth:2, width: 380, marginLeft: 10, marginTop: 10, borderRadius: 5, borderColor:"#948E8E"}}>
                             <Picker
-                                selectedValue={supplierName}
+                                selectedValue={supplierID}
                                 style={{ marginLeft: 10, height: 50, width: 380}}
-                                onValueChange={(itemValue, itemIndex) => setSupplierName(itemValue)}
+                                onValueChange={(itemValue, itemIndex) => setSupplierID(itemValue)}
                             >
                                 {
                                 suppliers.map((item, index) => {
@@ -375,7 +379,7 @@ const CreateRequisition = (props) => {
                             onChangeText={text => setTotalAmount(text)}
                             />
 
-                            <Button icon="login" style={styles.button}
+                            <Button icon="lead-pencil" style={styles.button}
                             disabled={text2 === 'true'?'':'true'}
                              mode="contained" onPress={() => _Submit()}>
                                 Create Requisition

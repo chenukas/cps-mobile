@@ -44,6 +44,8 @@ const Login = ({navigation}) => {
                     if(data.data.userType == 2){
                         Alert.alert(`Successfully Login`)
                         navigation.navigate("Main", {data})
+                        setEmail("")
+                        setPassword("")
                     }
                     else{
                         Alert.alert(`Login is valied for site manager`)

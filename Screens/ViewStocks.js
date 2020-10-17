@@ -28,8 +28,8 @@ const ViewStocks = () => {
                                         <Text style={styles.text2}>{item.quantity}</Text>
                                     </View>
                                     
-                                    <Button icon={item.quantity < 1000 ?"arrow-down-bold":"check-bold"} 
-                                    color={item.quantity < 1000 ?"#C90808":"#065803"} 
+                                    <Button icon={item.quantity < 100 ?"arrow-down-bold":"check-bold"} 
+                                    color={item.quantity < 100 ?"#C90808":"#065803"} 
                                     style={{position:"absolute", marginBottom: 6, paddingLeft:15, marginLeft:300, width:0, height: 30, marginTop:20 }} 
                                     mode="contained"
                                     /> 
