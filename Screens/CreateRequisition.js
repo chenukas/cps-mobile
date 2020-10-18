@@ -6,7 +6,6 @@ import {Picker} from '@react-native-community/picker';
 import Item from './Item'
 
 import DatePicker from 'react-native-datepicker';
-//import DateTimePicker from '@react-native-community/datetimepicker';
 
 const wait = (timeout) => {
     return new Promise(resolve => {
@@ -16,8 +15,10 @@ const wait = (timeout) => {
 
 const CreateRequisition = (props) => {
 
+    //pass the userArray from Main Page to Create Requisition page
     const {_id, fullName, site} = props.route.params.userArray;
 
+    //Get current date
     useEffect(() => {
         var date = new Date().getDate(); //Current Date
         var month = new Date().getMonth() + 1; //Current Month
@@ -27,6 +28,7 @@ const CreateRequisition = (props) => {
         );
       }, []);
 
+    //Define the states
     const [requisitionID, setRequisitionID] = useState("")
     const [siteNo, setSiteNo] = useState(site.siteNo)
     const [siteId, setSiteId] = useState(site._id)
@@ -35,6 +37,7 @@ const CreateRequisition = (props) => {
     const [requireDate, setRequireDate] = useState("")
     const [requestDate, setRequestDate] = useState("")
     const [supplierName, setSupplierName] = useState("")
+    const [supplierID, setSupplierID] = useState("")
     const [prodName, setProdName] = useState("")
     const [qty, setQty] = useState("")
     const [items, setItems] = useState([])
@@ -55,6 +58,7 @@ const CreateRequisition = (props) => {
     const [text3, setText3] = useState('true')
     const [text4, setText4] = useState('true')
 
+    //call the get requisition number end point
     useEffect (() => {
         fetch("http://10.0.2.2:3000/getRequisitionNumber")
         .then(res => res.json())
@@ -63,6 +67,7 @@ const CreateRequisition = (props) => {
         })
     },[])
 
+    //call the retrive all suppliers end point
     useEffect (() => {
         fetch("http://10.0.2.2:3000/suppliers")
         .then(res => res.json())
@@ -70,14 +75,16 @@ const CreateRequisition = (props) => {
 
             for(let i = 0; i < results.data.length; i++){
                 res.push({
+                    'supplerId':results.data[i]._id,
                     'supplier':results.data[i].supName,
-                    'id':i     
+                    'id':i
                 })
             }
             setSuppliers(res)
         })
     },[])
 
+    //create a call back function to refresh scrollview
     const onRefresh = React.useCallback(() => {
         setRefreshing(true);
 
@@ -91,11 +98,9 @@ const CreateRequisition = (props) => {
     })
 
     const addProducts = () => {
-        console.log("Hii")
         
         if(qty){
 
-            console.log(prodName)
             for(let i = 0; i < product.length; i++){
                 if(prodName == product[i].items){
                     items.push({
@@ -112,16 +117,13 @@ const CreateRequisition = (props) => {
             setText1('true')
             setText3('')
         }
-
-        console.log(items);
         
     }
 
     const generate = () => {
         setLoading(false)
-        if(supplierName){
-            const supName = supplierName
-            console.log(supName)
+        if(supplierID){
+            const supName = supplierID
             fetch("http://10.0.2.2:3000/supplierItem", {
                     method: 'POST',
                     headers:{
@@ -132,6 +134,7 @@ const CreateRequisition = (props) => {
                     })
                 }).then(res => res.json())
                 .then(data =>{
+                    setSupplierName(data.data._id)
                     for(let i = 0; i < data.data.items.length; i++){
                         res1.push({
                             'items':data.data.items[i].itemName,
@@ -141,7 +144,6 @@ const CreateRequisition = (props) => {
                         })
                     }
                     setProduct(res1)
-                    console.log(res1)
 
                 }).catch(err =>{
                     console.log("error", err)
@@ -150,36 +152,34 @@ const CreateRequisition = (props) => {
     }
 
     const deleteItem = (key) => {
-        console.log(key);
         items.splice(key, 1);
         setItems(items)
-        console.log(items);
     }
 
     const calculate = () =>{
-        console.log(items.length)
         var i;
         var tot = 0;
         var quan = 0;
-        console.log(items)
+
         for(i = 0; i < items.length; i++){
-            console.log(items[i].quantity)
             quan = items[i].quantity * items[i].unitPrice;
             tot = tot + quan;
         }
         setTotalAmount(tot.toString())
         if(tot > 100000){
-            setStatus("pending")
+            setStatus("Pending")
         }
         else{
-            setStatus("approved")
+            setStatus("Approved")
         }
         setText2('true')
         setText4('')
         setText1('')
     }
 
+    //call the requisition add function
     const _Submit = () => {
+
         fetch("http://10.0.2.2:3000/requisitions", {
             method: 'POST',
             headers:{
@@ -199,12 +199,12 @@ const CreateRequisition = (props) => {
             })
         }).then(res => res.json())
         .then(data =>{
-            console.log(data.message)
             if(data.success == false){
                 Alert.alert("Requisition validation failed")
             }
             else{
                 Alert.alert(`Successfully Added`)
+                props.navigation.navigate("Main")
             }
             
         }).catch(err =>{
@@ -295,9 +295,9 @@ const CreateRequisition = (props) => {
                         <Text style={{marginTop: 10, color:"#000", marginLeft:15}}>Select Supplier : </Text>
                         <View style={{borderWidth:2, width: 380, marginLeft: 10, marginTop: 10, borderRadius: 5, borderColor:"#948E8E"}}>
                             <Picker
-                                selectedValue={supplierName}
+                                selectedValue={supplierID}
                                 style={{ marginLeft: 10, height: 50, width: 380}}
-                                onValueChange={(itemValue, itemIndex) => setSupplierName(itemValue)}
+                                onValueChange={(itemValue, itemIndex) => setSupplierID(itemValue)}
                             >
                                 {
                                 suppliers.map((item, index) => {
@@ -375,7 +375,7 @@ const CreateRequisition = (props) => {
                             onChangeText={text => setTotalAmount(text)}
                             />
 
-                            <Button icon="login" style={styles.button}
+                            <Button icon="lead-pencil" style={styles.button}
                             disabled={text2 === 'true'?'':'true'}
                              mode="contained" onPress={() => _Submit()}>
                                 Create Requisition

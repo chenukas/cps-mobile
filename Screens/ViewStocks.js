@@ -1,9 +1,10 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, Image, StyleSheet,ActivityIndicator, FlatList, ScrollView } from 'react-native';
-import {Card, FAB, Button} from 'react-native-paper';
+import { View, Text, StyleSheet,ActivityIndicator, FlatList } from 'react-native';
+import {Card, Button} from 'react-native-paper';
 
 const ViewStocks = () => {
 
+    //Define the states
     const [data, setData ]  = useState([])
     const [loading, setLoading] = useState(true)
 
@@ -11,12 +12,12 @@ const ViewStocks = () => {
         fetch("http://10.0.2.2:3000/items")
         .then(res => res.json())
         .then(results => {
-            console.log(results.data.length)
             setData(results.data)
             setLoading(false)
         })
     },[])
 
+    //create card list
     const renderList = ((item) => {
         return(
             <Card style={styles.myCard}>
@@ -28,8 +29,8 @@ const ViewStocks = () => {
                                         <Text style={styles.text2}>{item.quantity}</Text>
                                     </View>
                                     
-                                    <Button icon={item.quantity < 1000 ?"arrow-down-bold":"check-bold"} 
-                                    color={item.quantity < 1000 ?"#C90808":"#065803"} 
+                                    <Button icon={item.quantity < 100 ?"arrow-down-bold":"check-bold"} 
+                                    color={item.quantity < 100 ?"#C90808":"#065803"} 
                                     style={{position:"absolute", marginBottom: 6, paddingLeft:15, marginLeft:300, width:0, height: 30, marginTop:20 }} 
                                     mode="contained"
                                     /> 

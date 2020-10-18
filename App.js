@@ -5,6 +5,7 @@ import Main from './Screens/Main';
 import CreateRequisition from './Screens/CreateRequisition';
 import ViewRequisition from './Screens/ViewRequisition';
 import ViewStocks from './Screens/ViewStocks';
+import ViewOrder from './Screens/ViewOrder';
 
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
@@ -49,6 +50,13 @@ export default function App() {
           <Stack.Screen
            name="ViewStocks"
            component={ViewStocks}
+           options={{
+            headerShown: false
+          }}
+          />
+          <Stack.Screen
+           name="ViewOrder"
+           component={ViewOrder}
            options={{
             headerShown: false
           }}

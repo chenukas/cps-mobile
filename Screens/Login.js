@@ -1,12 +1,14 @@
-import React, { useState, useEffect } from 'react';
-import { View, Alert, StyleSheet, ScrollView, Text } from 'react-native';
+import React, { useState } from 'react';
+import { View, Alert, StyleSheet, Text } from 'react-native';
 import { TextInput, Button } from 'react-native-paper';
 
 const Login = ({navigation}) => {
 
+    //Define the states
     const [email, setEmail] = useState("")
     const [password, setPassword] = useState("")
 
+    //call the check authentication function
     const _submitData = () => {
         fetch("http://10.0.2.2:3000/authenticate", {
             method: 'POST',
@@ -21,8 +23,6 @@ const Login = ({navigation}) => {
             res => res.json()
         )
         .then(data =>{
-            console.log("Hi")
-            console.log(data.token)
             if(!data.token){
                 Alert.alert(`Login is invalid`)
                 navigation.navigate("Login")
@@ -44,6 +44,8 @@ const Login = ({navigation}) => {
                     if(data.data.userType == 2){
                         Alert.alert(`Successfully Login`)
                         navigation.navigate("Main", {data})
+                        setEmail("")
+                        setPassword("")
                     }
                     else{
                         Alert.alert(`Login is valied for site manager`)
@@ -66,6 +68,7 @@ const Login = ({navigation}) => {
                         <Text style={{marginBottom:20, fontSize: 30, textAlign:"center", color:"#000", fontWeight: "bold"}}>Procurement Controller</Text>
                     </View>
                     <TextInput
+                        testID={'email'}
                         label="Email"
                         value={email}
                         left={<TextInput.Icon name="account"/>}
@@ -76,6 +79,7 @@ const Login = ({navigation}) => {
                         onChangeText={text => setEmail(text)}
                     />
                     <TextInput
+                        testID={'password'}
                         label="Password"
                         value={password}
                         left={<TextInput.Icon name="onepassword"/>}

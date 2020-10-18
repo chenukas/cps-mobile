@@ -11,8 +11,11 @@
     "@react-native-community/datetimepicker": "^3.0.3",
     "@react-native-community/masked-view": "^0.1.10",
     "@react-native-community/picker": "^1.8.1",
+    "@react-navigation/drawer": "^5.9.3",
     "@react-navigation/native": "^5.7.6",
     "@react-navigation/stack": "^5.9.3",
+    "enzyme": "^3.11.0",
+    "enzyme-adapter-react-16": "^1.15.5",
     "expo": "~39.0.2",
     "expo-splash-screen": "~0.6.2",
     "expo-status-bar": "~1.0.2",
@@ -36,7 +39,10 @@
     "react-test-renderer": "~16.13.1"
   },
   "jest": {
-    "preset": "react-native"
+    "preset": "react-native",
+    "transformIgnorePatterns": [
+      "node_modules/(?!(react-native|react-native-cookies)/)"
+    ]
   },
   "private": true
 }
