@@ -21,9 +21,10 @@ const ViewOrder = (props) => {
         fetch("http://10.0.2.2:3000/orders")
         .then(res => res.json())
         .then(results => {
-
+            
             for(let i = 0; i < results.data.length; i++){
-                if(siteManagerId == results.data[i].requisitionID.siteManagerId){
+                if(siteManagerId == results.data[i].requisitionID.siteManagerId._id){
+
                     res.push({
                         'orderID':results.data[i].orderID,
                         'requisitionID':results.data[i].requisitionID.requisitionID,
@@ -34,7 +35,6 @@ const ViewOrder = (props) => {
             }
             setData(res)
             setLoading(false)
-            console.log(data)
         })
     },[])
 
