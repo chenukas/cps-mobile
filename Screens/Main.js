@@ -1,12 +1,14 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, Alert, StyleSheet, Image } from 'react-native';
-import { TextInput, Button } from 'react-native-paper';
+import { View, Text, StyleSheet, Image } from 'react-native';
+import { Button } from 'react-native-paper';
 
 const Main = (props) => {
 
+    //Define the states
     const {fullName, email} = props.route.params.data.data;
     const [userArray, setUserArray] = useState([])
 
+    //call the user retrieve end point
     useEffect (() => {
         fetch("http://10.0.2.2:3000/sign", {
         method: 'POST',
@@ -18,7 +20,6 @@ const Main = (props) => {
         })
         }).then(res => res.json())
         .then(results => {
-            //console.log(results)
             setUserArray(results.data)
         }).catch(err =>{
             console.log("error", err)

@@ -1,27 +1,27 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, Image, StyleSheet,ActivityIndicator, FlatList, ScrollView, Alert, RefreshControl, SafeAreaView } from 'react-native';
-import {Card, FAB, Button} from 'react-native-paper';
+import { View, Text, StyleSheet,ActivityIndicator, FlatList} from 'react-native';
+import {Card} from 'react-native-paper';
 
 const ViewOrder = (props) => {
 
-    const {_id, fullName, site} = props.route.params.userArray;
-    //console.log(fullName)
 
+    //pass the userArray from Main Page to View Order page
+    const {_id} = props.route.params.userArray;
+
+    //Define the states
     const [data, setData ]  = useState([])
     const [loading, setLoading] = useState(true)
     const [siteManagerId, setSiteManagerId] = useState(_id)
 
-    const [orderID, setOrderID] = useState("")
-    const [status, setStatus] = useState("pending")
 
     let  res = [];
 
+    //call the order retrieve end point
     useEffect (() => {
         fetch("http://10.0.2.2:3000/orders")
         .then(res => res.json())
         .then(results => {
-            console.log(results.data[0].requisitionID.siteManagerId)
-            console.log(results.data.length)
+
             for(let i = 0; i < results.data.length; i++){
                 if(siteManagerId == results.data[i].requisitionID.siteManagerId){
                     res.push({
@@ -38,6 +38,7 @@ const ViewOrder = (props) => {
         })
     },[])
 
+    //create a card list
     const renderList = ((item) => {
         return(
             <Card style={styles.myCard}>

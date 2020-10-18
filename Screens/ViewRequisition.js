@@ -1,12 +1,13 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, Image, StyleSheet,ActivityIndicator, FlatList, ScrollView, Alert, RefreshControl, SafeAreaView } from 'react-native';
-import {Card, FAB, Button} from 'react-native-paper';
+import { View, Text, StyleSheet,ActivityIndicator, FlatList } from 'react-native';
+import {Card, Button} from 'react-native-paper';
 
 const ViewRequisition = (props) => {
 
+    //pass the userArray from Main Page to View Requisition page
     const {_id, fullName, site} = props.route.params.userArray;
-    console.log(fullName)
 
+    //Define the states
     const [data, setData ]  = useState([])
     const [loading, setLoading] = useState(true)
     const [siteManagerId, setSiteManagerId] = useState(_id)
@@ -14,6 +15,7 @@ const ViewRequisition = (props) => {
     const [orderID, setOrderID] = useState("")
     const [status, setStatus] = useState("pending")
 
+    //call get next order number end point
     useEffect (() => {
         fetch("http://10.0.2.2:3000/getOrderNumber")
         .then(res => res.json())
@@ -33,12 +35,12 @@ const ViewRequisition = (props) => {
             })
         }).then(res => res.json())
         .then(results => {
-            console.log(results.data)
             setData(results.data)
             setLoading(false)
         })
     },[]);
 
+    //create card list
     const renderList = ((item) => {
         return(
             <Card style={styles.myCard}>
@@ -81,7 +83,6 @@ const ViewRequisition = (props) => {
         .then(data =>{
 
             if(data.success == false){
-                //console.log(data)
                 Alert.alert("Order validation failed")
             }
             else{

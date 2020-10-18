@@ -6,7 +6,6 @@ import {Picker} from '@react-native-community/picker';
 import Item from './Item'
 
 import DatePicker from 'react-native-datepicker';
-//import DateTimePicker from '@react-native-community/datetimepicker';
 
 const wait = (timeout) => {
     return new Promise(resolve => {
@@ -16,9 +15,10 @@ const wait = (timeout) => {
 
 const CreateRequisition = (props) => {
 
+    //pass the userArray from Main Page to Create Requisition page
     const {_id, fullName, site} = props.route.params.userArray;
-    console.log(props.route.params.userArray)
 
+    //Get current date
     useEffect(() => {
         var date = new Date().getDate(); //Current Date
         var month = new Date().getMonth() + 1; //Current Month
@@ -28,6 +28,7 @@ const CreateRequisition = (props) => {
         );
       }, []);
 
+    //Define the states
     const [requisitionID, setRequisitionID] = useState("")
     const [siteNo, setSiteNo] = useState(site.siteNo)
     const [siteId, setSiteId] = useState(site._id)
@@ -51,14 +52,13 @@ const CreateRequisition = (props) => {
 
     const res = [];
     const res1 = [];
-    
-    console.log(siteId)
 
     const [text1, setText1] = useState('')
     const [text2, setText2] = useState('')
     const [text3, setText3] = useState('true')
     const [text4, setText4] = useState('true')
 
+    //call the get requisition number end point
     useEffect (() => {
         fetch("http://10.0.2.2:3000/getRequisitionNumber")
         .then(res => res.json())
@@ -67,6 +67,7 @@ const CreateRequisition = (props) => {
         })
     },[])
 
+    //call the retrive all suppliers end point
     useEffect (() => {
         fetch("http://10.0.2.2:3000/suppliers")
         .then(res => res.json())
@@ -83,6 +84,7 @@ const CreateRequisition = (props) => {
         })
     },[])
 
+    //create a call back function to refresh scrollview
     const onRefresh = React.useCallback(() => {
         setRefreshing(true);
 
@@ -132,7 +134,6 @@ const CreateRequisition = (props) => {
                     })
                 }).then(res => res.json())
                 .then(data =>{
-                    console.log(data.data._id)
                     setSupplierName(data.data._id)
                     for(let i = 0; i < data.data.items.length; i++){
                         res1.push({
@@ -143,7 +144,6 @@ const CreateRequisition = (props) => {
                         })
                     }
                     setProduct(res1)
-                    console.log(res1)
 
                 }).catch(err =>{
                     console.log("error", err)
@@ -152,20 +152,16 @@ const CreateRequisition = (props) => {
     }
 
     const deleteItem = (key) => {
-        console.log(key);
         items.splice(key, 1);
         setItems(items)
-        console.log(items);
     }
 
     const calculate = () =>{
-        console.log(items.length)
         var i;
         var tot = 0;
         var quan = 0;
-        console.log(items)
+
         for(i = 0; i < items.length; i++){
-            console.log(items[i].quantity)
             quan = items[i].quantity * items[i].unitPrice;
             tot = tot + quan;
         }
@@ -181,9 +177,9 @@ const CreateRequisition = (props) => {
         setText1('')
     }
 
+    //call the requisition add function
     const _Submit = () => {
-        console.log(supplierName)
-        console.log(_id)
+
         fetch("http://10.0.2.2:3000/requisitions", {
             method: 'POST',
             headers:{
